@@ -1,0 +1,46 @@
+{
+  "bugs": [
+    {
+      "desc": "Task-1 Update header title",
+      "score": 10,
+      "required": true
+    },
+    {
+      "desc": "Task-2 Returns the product with the lowest rating",
+      "score": 10,
+      "required": true
+    },
+    {
+      "desc": "Task-6.a Returns true for a palindrome string",
+      "score": 10,
+      "required": false
+    },
+    {
+      "desc": "Task-6.b Returns false for a non-palindrome string",
+      "score": 10,
+      "required": false
+    }
+  ],
+  "features": [
+    {
+      "desc": "Task-3 Returns the product with the highest rating",
+      "score": 20,
+      "required": false
+    },
+    {
+      "desc": "Task-7 Returns the number of verified reviews",
+      "score": 20,
+      "required": true
+    },
+    {
+      "desc": "Task-4 Returns the average rating of products",
+      "score": 20,
+      "required": true
+    },
+    {
+      "desc": "Task-5 Returns the products sorted by rating in descending order",
+      "score": 20,
+      "required": true
+    }
+  ]
+}

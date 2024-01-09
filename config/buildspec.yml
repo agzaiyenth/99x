@@ -1,0 +1,45 @@
+version: 0.2
+
+env:
+  parameter-store:
+    SONARCLOUD_TOKEN :  "/dgSonarCloudToken/prod"
+    SONARCLOUD_ORG :  "/dgSonarCloudOrg/prod"
+phases:
+  install:
+    runtime-versions:
+      java: corretto11
+      nodejs: 14
+    commands:
+      - echo Installing Project dependencies
+      - npm install --silent
+      - npm install -g jest
+      - npm install yaml aws-sdk glob tar
+      - echo Finished Installing Project dependencies
+      - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.4.0.2170-linux.zip
+      - unzip ./sonar-scanner-cli-4.4.0.2170-linux.zip
+      - export PATH=$PATH:./sonar-scanner-4.4.0.2170-linux/bin/
+  pre_build:
+    commands:
+      - echo Testing Project
+      - echo $CODE_COMMIT_REPO
+      - jest --json > results.json || echo $CODE_COMMIT_REPO > ./config/repo.txt
+      - cd config
+      - npm install
+      - node result.js
+      - cd ..
+      - echo Finished Testing Project
+      - sonar-scanner -Dsonar.organization=$SONARCLOUD_ORG -Dsonar.projectKey=$CODE_COMMIT_REPO-analysis -Dsonar.sources=. -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONARCLOUD_TOKEN
+      - sleep 5
+      - curl https://sonarcloud.io/api/qualitygates/project_status?projectKey=$CODE_COMMIT_REPO-analysis > analysis.json
+      - curl --location --request PUT http://dev.devgrade.io/assessments/sonar/$CODE_COMMIT_REPO
+      - cat analysis.json
+  build:
+    commands:
+      - cd config && node result.js
+      - echo Finished Testing Project
+      - echo Building Project
+      - echo Finished Building
+
+cache:
+  paths:
+    - "node_modules/**/*"
